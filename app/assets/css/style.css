@@ -259,6 +259,7 @@ button {
 }
 
 .goods-card .label {
+    text-transform: capitalize;
     position: absolute;
     left: 18px;
     top: 18px;

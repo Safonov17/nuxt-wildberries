@@ -183,16 +183,12 @@
 			<div class="col-lg-3 col-sm-6" v-for="product in data" :key="product.id">
 				<div class="goods-card">
 					<span class="label">{{ product.label }}</span>
-					<img
-						:src="product.img"
-						:alt="product.name"
-						class="goods-image"
-					/>
+					<img :src="product.img" :alt="product.name" class="goods-image" />
 					<h3 class="goods-title">{{ product.name }}</h3>
 					<p class="goods-description">{{ product.description }}</p>
 					<button
 						class="button goods-card-btn add-to-cart"
-						:data-id="product.id"
+						@click="addToCart(product)"
 					>
 						<span class="button-price">${{ product.price }}</span>
 					</button>
@@ -456,6 +452,27 @@
 	</section>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import type { CartItem } from '~/models/cart-item.model'
+import type { Product } from '~/models/products.model'
+
 const { data } = await useFetch('/api/new-products')
+
+const cartItems = useCart()
+
+const addToCart = (product: Product) => {
+	const findItem = cartItems.value.find(item => item.id === product.id)
+
+	if (findItem) {
+		findItem.count++
+	} else {
+		const newCartItem: CartItem = {
+			id: product.id,
+			name: product.name,
+			price: Number(product.price),
+			count: 1
+		}
+		cartItems.value.push(newCartItem)
+	}
+}
 </script>
